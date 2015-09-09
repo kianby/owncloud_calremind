@@ -1,4 +1,4 @@
-# owncloud_calremind
+# Owncloud Calendar Reminder
 
 **calremind** sends e-mail reminder about incoming calendar events.
 
