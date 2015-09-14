@@ -23,7 +23,7 @@ KIND=$5
 EMAIL=$6
 
 if [ "$KIND" = "weekly" ]; then
-    query="SELECT summary,startdate FROM oc_clndr_objects WHERE calendarid = $CALID AND startdate BETWEEN DATE(CURDATE()) AND DATE_SUB( CURDATE(), INTERVAL 6 DAY ) ORDER by startdate \G"
+    query="SELECT summary,startdate FROM oc_clndr_objects WHERE calendarid = $CALID AND DATE(startdate) BETWEEN CURDATE() AND CURDATE() + INTERVAL 6 DAY ORDER by startdate \G"
     mysql -u$DBUSER -p$DBPASSWD $DBSCHEMA -Bse "$query" >tmp_weekly.txt
     awk -f calweekly.awk tmp_weekly.txt >tmp_weekly.sh
     /bin/sh tmp_weekly.sh >tmp_weekly.mail
