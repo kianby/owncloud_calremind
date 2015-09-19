@@ -1,18 +1,19 @@
-BEGIN { 
-    FS="\n"    
+BEGIN {
+    FS="\n"
     OFS=""
     ORS="\n"
     print "#!/bin/sh"
-    print " " 
+    print " "
 }
 # blank lines
 /^$/ { next }
 # record header
-$1 ~ /^\*\*\*\*/ { 
+$1 ~ /^\*\*\*\*/ {
     next
 }
 # summary field
 $1 ~ /^[ ]*summary\:/ {
+    gsub(/\r/,"");
     idx = match($1, /summary\:(.*)/)
     print "SUMMARY=\"" substr($1, idx + 9) "\""
     next
@@ -25,18 +26,21 @@ $1 ~ /^[ ]*startdate\: / {
 }
 # vcalendar start tag
 $1 ~ /^[ ]*calendardata\: / {
+    gsub(/\r/,"");
     match($1, /calendardata\: /)
     print "echo \"" substr($1, RSTART + RLENGTH) "\" >event.ics"
     next
 }
 # vcalendar end tag
 $1 ~ /^END\:VCALENDAR/ {
-    print "echo \"" $1 "\" >>event.ics"   
+    gsub(/\r/,"");
+    print "echo \"" $1 "\" >>event.ics"
     print "mpack -s \"$SUMMARY - $STARTDATE\" event.ics $1"
-    print ""     
+    print ""
     next
 }
 # vcalendar body
-{            
+{
+    gsub(/\r/,"");
     print "echo \"" $0 "\" >> event.ics"
 }
